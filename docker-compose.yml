@@ -1,0 +1,189 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:17-alpine
+    container_name: bartenderapp-postgres
+    environment:
+      POSTGRES_USER: bartender
+      POSTGRES_PASSWORD: bartenderpass
+      POSTGRES_DB: bartenderdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bartender -d bartenderdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # NATS message broker
+  nats:
+    image: nats:latest
+    container_name: bartenderapp-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["--jetstream"]
+
+  # Auth Service
+  auth-service:
+    build:
+      context: ./services
+      dockerfile: auth/Dockerfile
+    container_name: bartenderapp-auth-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bartender
+      DB_PASSWORD: bartenderpass
+      DB_NAME: bartenderdb
+      JWT_SECRET: dev-jwt-secret-key-change-in-production
+      PORT: 8081
+      NATS_URL: nats://nats:4222
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  # Inventory Service
+  inventory-service:
+    build:
+      context: ./services
+      dockerfile: inventory/Dockerfile
+    container_name: bartenderapp-inventory-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bartender
+      DB_PASSWORD: bartenderpass
+      DB_NAME: bartenderdb
+      PORT: 8082
+      NATS_URL: nats://nats:4222
+      AUTH_SERVICE_URL: http://auth-service:8081
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+  # Order Service
+  order-service:
+    build:
+      context: ./services
+      dockerfile: order/Dockerfile
+    container_name: bartenderapp-order-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bartender
+      DB_PASSWORD: bartenderpass
+      DB_NAME: bartenderdb
+      PORT: 8083
+      NATS_URL: nats://nats:4222
+      AUTH_SERVICE_URL: http://auth-service:8081
+      INVENTORY_SERVICE_URL: http://inventory-service:8082
+      PRICING_SERVICE_URL: http://pricing-service:8084
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+      auth-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+      pricing-service:
+        condition: service_started
+
+  # Pricing Service
+  pricing-service:
+    build:
+      context: ./services
+      dockerfile: pricing/Dockerfile
+    container_name: bartenderapp-pricing-service
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: bartender
+      DB_PASSWORD: bartenderpass
+      DB_NAME: bartenderdb
+      PORT: 8084
+      NATS_URL: nats://nats:4222
+      AUTH_SERVICE_URL: http://auth-service:8081
+      INVENTORY_SERVICE_URL: http://inventory-service:8082
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+    container_name: bartenderapp-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth-service
+      - inventory-service
+      - order-service
+      - pricing-service
+    environment:
+      VITE_API_URL: http://localhost:8081
+      VITE_AUTH_API_URL: http://localhost:8081
+      VITE_INVENTORY_API_URL: http://localhost:8082
+      VITE_ORDER_API_URL: http://localhost:8083
+      VITE_PRICING_API_URL: http://localhost:8084
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: bartenderapp-prometheus
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    container_name: bartenderapp-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  prometheus_data:
+  grafana_data: 
