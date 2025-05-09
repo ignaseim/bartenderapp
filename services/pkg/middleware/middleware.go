@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourusername/bartenderapp/services/pkg/auth"
+	"github.com/ignaseim/bartenderapp/services/pkg/auth"
 )
 
 // RequestLogger logs information about each HTTP request

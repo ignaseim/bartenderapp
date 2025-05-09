@@ -1,4 +1,4 @@
-module github.com/yourusername/bartenderapp/services/pkg
+module github.com/ignaseim/bartenderapp/services/pkg
 
 go 1.22
 

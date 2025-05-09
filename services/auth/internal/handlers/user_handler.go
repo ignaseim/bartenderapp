@@ -6,10 +6,10 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/yourusername/bartenderapp/services/auth/internal/service"
-	"github.com/yourusername/bartenderapp/services/pkg/auth"
-	"github.com/yourusername/bartenderapp/services/pkg/middleware"
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/service"
+	"github.com/ignaseim/bartenderapp/services/pkg/auth"
+	"github.com/ignaseim/bartenderapp/services/pkg/middleware"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 )
 
 // UserHandler handles user-related HTTP requests

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log"
 
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 )
 
 // UserRepository handles database operations for users

@@ -49,7 +49,7 @@ bartenderapp/
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/bartenderapp.git
+   git clone https://github.com/ignaseim/bartenderapp.git
    cd bartenderapp
    ```
 

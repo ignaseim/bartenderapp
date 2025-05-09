@@ -4,9 +4,9 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/yourusername/bartenderapp/services/auth/internal/repository"
-	"github.com/yourusername/bartenderapp/services/pkg/auth"
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/repository"
+	"github.com/ignaseim/bartenderapp/services/pkg/auth"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 )
 
 // UserService handles user-related operations

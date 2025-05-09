@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 )
 
 // JWT claims structure

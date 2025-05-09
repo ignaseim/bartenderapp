@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/yourusername/bartenderapp/services/auth/internal/repository"
-	"github.com/yourusername/bartenderapp/services/pkg/auth"
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/repository"
+	"github.com/ignaseim/bartenderapp/services/pkg/auth"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 	"golang.org/x/crypto/bcrypt"
 )
 

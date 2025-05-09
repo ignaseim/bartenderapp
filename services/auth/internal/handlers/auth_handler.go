@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourusername/bartenderapp/services/auth/internal/service"
-	"github.com/yourusername/bartenderapp/services/pkg/middleware"
-	"github.com/yourusername/bartenderapp/services/pkg/models"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/service"
+	"github.com/ignaseim/bartenderapp/services/pkg/middleware"
+	"github.com/ignaseim/bartenderapp/services/pkg/models"
 )
 
 // AuthHandler handles authentication HTTP requests

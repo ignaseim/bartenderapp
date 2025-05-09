@@ -12,11 +12,11 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/yourusername/bartenderapp/services/auth/internal/handlers"
-	"github.com/yourusername/bartenderapp/services/auth/internal/repository"
-	"github.com/yourusername/bartenderapp/services/auth/internal/service"
-	"github.com/yourusername/bartenderapp/services/pkg/database"
-	"github.com/yourusername/bartenderapp/services/pkg/middleware"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/handlers"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/repository"
+	"github.com/ignaseim/bartenderapp/services/auth/internal/service"
+	"github.com/ignaseim/bartenderapp/services/pkg/database"
+	"github.com/ignaseim/bartenderapp/services/pkg/middleware"
 )
 
 func main() {
